@@ -1,0 +1,108 @@
+body {
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+  background-color: #000000;
+}
+
+nav {
+  background-color: #2b2b2b;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.logo img {
+  height: 55px;
+  width: 200px;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.nav-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  font-size: 20px;
+}
+
+.nav-links li {
+  margin-right: 20px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 30px;
+}
+
+.nav-links li a:hover {
+  color: #ff9800;
+}
+
+.container {
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.basketItems {
+  color: #fff;
+  background: rgba(56, 56, 56, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 30px; 
+  width: 90%; 
+  margin: 0 auto;
+  margin-top: 30px; 
+}
+
+.basket-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.basket-table th,
+.basket-table td {
+  padding: 10px; 
+  text-align: center;
+}
+
+.basket-table th {
+  background-color: #2b2b2b;
+}
+
+button {
+  padding: 12px 24px; 
+  background-color: #333;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 24px; 
+  cursor: pointer;
+  font-family: "Roboto", sans-serif;
+  margin-top: 16px; 
+}
+
+.removeButton{
+  margin-bottom: 15px;
+}
+
+.removeButton:hover {
+  background-color: #ff9800;
+  color: red;
+}
+
+.basket-item-image img {
+  width: 150px; 
+  border-radius: 20px;
+}
+
+.quantityButton{
+  margin-bottom: 15px;
+}
+
+.quantityButton:hover{
+  background-color: #ff9800;
+  
+}

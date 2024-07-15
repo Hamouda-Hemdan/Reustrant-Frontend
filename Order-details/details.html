@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restaurant-Main page</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link rel="stylesheet" href="details.css" />
+  </head>
+  <body>
+    <div class="container">
+      <nav>
+        <div class="logo">
+          <a href="../index.html"
+            ><img src="../assets/logo3.png" alt="Restaurant Logo"
+          /></a>
+        </div>
+        <ul class="nav-links" id="navLinks">
+          <li class="menu"><a href="../index.html">Menu</a></li>
+          <li id="ordersLink" style="display: none">
+            <a href="../Orders/order.html">Orders</a>
+          </li>
+          <li class="cart"><a href="../Cart/cart.html">cart</a></li>
+          <li class="cart"><a href="../Orders/order.html">orders</a></li>
+          <li>
+            <a href="../Profile/profile.html"
+              ><i class="fas fa-user" id="Profile"></i
+            ></a>
+          </li>
+        </ul>
+      </nav>
+      <div class="details-container">
+        <h1>Order Details</h1>
+        <div class="order-details" id="order-details">
+          <!-- Content will be dynamically populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <script src="details.js"></script>
+  </body>
+</html>

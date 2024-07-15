@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+body {
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+  background-color: rgb(0, 0, 0);
+  color: #fff;
+}
+
+nav {
+  background-color: #2b2b2b;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  width: 100%;
+}
+
+.logo img {
+  height: 55px;
+  width: 200px;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.nav-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  font-size: 30px;
+}
+
+.nav-links li {
+  margin-right: 20px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: #fff;
+}
+
+.nav-links li a:hover {
+  color: #ff9800;
+}
+
+.order-container {
+  padding: 20px;
+}
+
+.order-box {
+  background-color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  margin-bottom: 20px; /* Added margin-bottom to separate each order */
+}
+
+.order-box p {
+  margin: 10px 0;
+}
+
+.container-button {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.create-order-button {
+  background-color: #888787;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.create-order-button:hover {
+  background-color: #ff9800;
+}
+
+.create-order-button:active {
+  background-color:  #ff9800;
+}
+
+/* CSS for the text */
+.text {
+  display: block;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #888787;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  font-family: "Roboto", sans-serif;
+}
+button:hover {
+  background-color: #ff9800;
+}

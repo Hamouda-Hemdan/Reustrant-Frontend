@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restaurant-Main page</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <div class="container">
+      <nav>
+        <div class="logo">
+          <a href="../index.html"
+            ><img src="assets/logo3.png" alt="Restaurant Logo"
+          /></a>
+        </div>
+        <ul class="nav-links" id="navLinks">
+          <li class="menu"><a href="index.html">Menu</a></li>
+          <li id="ordersLink" style="display: none">
+            <a href="Orders/order.html">Orders</a>
+          </li>
+          <li id="cartLink" style="display: none">
+            <a href="Cart/cart.html"
+              ><i class="fas fa-shopping-cart"></i><span id="totalAmount"></span
+            ></a>
+          </li>
+
+          <li>
+            <a href="Profile/profile.html"
+              ><i class="fas fa-user" id="Profile"></i
+            ></a>
+          </li>
+          <li id="signInLink"><a href="Authorization/login.html">SignIn</a></li>
+          <li id="signOutLink" style="display: none">
+            <a href="#" onclick="signOut()"
+              ><i class="fas fa-sign-out-alt"></i
+            ></a>
+          </li>
+        </ul>
+      </nav>
+      <div class="filter-container">
+        <div class="sorting">
+          <label for="sort">Sorting</label>
+          <select id="sort" required>
+            <option value="">...</option>
+            <option value="NameAsc">A-Z</option>
+            <option value="NameDesc">Z-A</option>
+            <option value="PriceAsc">PriceAsc</option>
+            <option value="PriceDesc">PriceDsc</option>
+            <option value="RatingAsc">RatingAsc</option>
+            <option value="RatingDesc">RatingDesc</option>
+          </select>
+        </div>
+        <div class="categories">
+          <label for="categorySelect">Categories</label>
+          <div class="select-box" id="categorySelect">
+            <div class="selected-option">Select</div>
+            <div class="options">
+              <label><input type="checkbox" value="Wok" /> Wok</label>
+              <label><input type="checkbox" value="Pizza" /> Pizza</label>
+              <label><input type="checkbox" value="Soup" /> Soup</label>
+              <label><input type="checkbox" value="Dessert" /> Dessert</label>
+              <label><input type="checkbox" value="Drink" /> Drink</label>
+            </div>
+          </div>
+        </div>
+        <div class="vegetarian">
+          <label class="switch">
+            <input type="checkbox" id="vegetarianSwitch" />
+            <span class="slider round"></span>
+          </label>
+          <label class="switch-text">Vegetarian</label>
+        </div>
+        <div>
+          <button class="filter" type="button" id="filter">Apply filter</button>
+        </div>
+      </div>
+      <div id="dishes-container" class="container-dishes"></div>
+      <div class="pagination">
+        <ul>
+          <!-- Pages or li elements will be added dynamically -->
+        </ul>
+      </div>
+    </div>
+    <script src="main.js"></script>
+    <script src="pagination.js"></script>
+    <script src="signOut.js"></script>
+    
+  </body>
+</html>

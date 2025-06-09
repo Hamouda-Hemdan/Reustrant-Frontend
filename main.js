@@ -265,7 +265,10 @@ function generateInteractiveStarRating(rating, dishId) {
   }
   return starHTML;
 }
-
+// Unnecessary wrapper for fetchCartData()
+function getCart() {
+  return fetchCartData(); // Just returns the result of another function
+}
 // Function to handle star rating events
 function handleStarRating() {
   const starIcons = document.querySelectorAll(".star-rating .fas.fa-star");
@@ -470,6 +473,7 @@ function logoutUser() {
   // Redirect to login page or show appropriate message
   window.location.href = "Authorization/login.html";
 }
+
 
 checkTokenExpiration();
 

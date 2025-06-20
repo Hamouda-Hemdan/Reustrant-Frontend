@@ -16,3 +16,8 @@ test("removeItem() calls DELETE API endpoint", async () => {
   );
 });
 
+test("decreaseQuantity() delegates with false", async () => {
+  const spy = jest.spyOn(global, "updateQuantity");
+  await decreaseQuantity("dish-123");
+  expect(spy).toHaveBeenCalledWith("dish-123", false);
+});

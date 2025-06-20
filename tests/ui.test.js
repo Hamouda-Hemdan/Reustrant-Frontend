@@ -18,3 +18,12 @@ test("generateInteractiveStarRating() creates 10 stars with 3 pre-selected", () 
   expect(stars.length).toBe(10);
   expect([...stars].filter(s => s.classList.contains("checked")).length).toBe(3);
 });
+
+test("handlePagination() updates currentPage", () => {
+  currentPage = 1;
+  sessionStorage.clear();
+  handlePagination(2);
+  
+  expect(currentPage).toBe(2);
+  expect(sessionStorage.getItem("currentPage")).toBe("2");
+});

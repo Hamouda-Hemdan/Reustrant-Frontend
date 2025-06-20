@@ -9,3 +9,12 @@ test("fetchCartData() returns [] on failure", async () => {
   const result = await fetchCartData();
   expect(result).toEqual([]);
 });
+
+test("generateInteractiveStarRating() creates 10 stars with 3 pre-selected", () => {
+  const html = generateInteractiveStarRating(3, "dish-123");
+  const stars = new DOMParser().parseFromString(html, "text/html")
+    .querySelectorAll(".fa-star");
+  
+  expect(stars.length).toBe(10);
+  expect([...stars].filter(s => s.classList.contains("checked")).length).toBe(3);
+});

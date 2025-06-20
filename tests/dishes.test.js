@@ -17,3 +17,10 @@ test("fetchDishes() returns valid dish data structure", async () => {
   expect(result.dishes[0]).toHaveProperty("name");
   expect(result.dishes[0]).toHaveProperty("price");
 });
+
+test("applyFilters() sets vegetarian query param", () => {
+  document.getElementById("vegetarianSwitch").checked = true;
+  applyFilters();
+  expect(params.get("vegetarian")).toBe("true");
+});
+

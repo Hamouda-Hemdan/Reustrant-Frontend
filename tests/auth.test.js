@@ -10,3 +10,9 @@ test("login() stores token in localStorage", async () => {
   await login("test@example.com", "password");
   expect(localStorage.setItem).toHaveBeenCalledWith("token", mockToken);
 });
+
+test("fetchCartData() sends auth header", () => {
+  global.fetch = jest.fn(() => Promise.resolve({ ok: true, json: () => [] }));
+  fetchCartData();
+  expect(fetch.mock.calls[0][0].headers).toHaveProperty("Authorization");
+});

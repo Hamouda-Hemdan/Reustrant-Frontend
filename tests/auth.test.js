@@ -16,3 +16,9 @@ test("fetchCartData() sends auth header", () => {
   fetchCartData();
   expect(fetch.mock.calls[0][0].headers).toHaveProperty("Authorization");
 });
+
+test("addToCart() blocks unauthorized users", () => {
+  localStorage.removeItem("token");
+  addToCart("dish-123");
+  expect(fetch).not.toHaveBeenCalled();
+});

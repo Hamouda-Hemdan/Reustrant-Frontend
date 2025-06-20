@@ -19,3 +19,9 @@ test("Formats delivery time correctly", () => {
   const renderedText = document.getElementById("order-details").textContent;
   expect(renderedText).toMatch(/\d{1,2}\/\d{1,2}\/\d{4}/); // Checks for locale date format
 });
+
+test("getOrderIdFromURL() parses URL params", () => {
+  delete window.location;
+  window.location = { search: "?orderId=abc123" };
+  expect(getOrderIdFromURL()).toBe("abc123");
+});

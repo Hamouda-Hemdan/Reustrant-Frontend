@@ -1,12 +1,20 @@
 //main.js
 
+function getAuthToken() {
+  return localStorage.getItem("token");
+}
+
+function isUserLoggedIn() {
+  return localStorage.getItem("isLoggedIn") === "true";
+}
+
 let currentPage = 1;
-const token = localStorage.getItem("token");
+const token = getAuthToken();
 const params = new URLSearchParams();
 
 function fetchCartData() {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  const token = localStorage.getItem("token");
+  const token = getAuthToken();
 
   if (!isLoggedIn || !token) {
     console.log("User is not logged in or authorization token is missing.");
@@ -124,8 +132,8 @@ function fetchDishes(page) {
 
 // Function to add a dish to the cart
 function addToCart(dishID) {
-  const token = localStorage.getItem("token");
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  const token = getAuthToken();
+  const isLoggedIn = isUserLoggedIn();
   if (!isLoggedIn) {
     console.error("User is not signed in.");
     alert("You need to sign in to add items to your cart.");
@@ -189,7 +197,8 @@ function addToCart(dishID) {
 
 // Function to update quantity of a dish in the cart
 function updateQuantity(dishID, change) {
-  const token = localStorage.getItem("token");
+  const token = getAuthToken();
+
   if (!token) {
     console.error("Authorization token is missing.");
     return;
@@ -439,7 +448,7 @@ async function fetchAndUpdateTotalAmount() {
 
 // Function to check token expiration and logout if expired
 function checkTokenExpiration() {
-  const token = localStorage.getItem("token");
+  const token = getAuthToken();
   if (!token) {
     // Token not found, user is already logged out
     return;
@@ -473,7 +482,6 @@ function logoutUser() {
   // Redirect to login page or show appropriate message
   window.location.href = "Authorization/login.html";
 }
-
 
 checkTokenExpiration();
 

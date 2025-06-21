@@ -1,4 +1,3 @@
-//main.js
 
 function getAuthToken() {
   return localStorage.getItem("token");
@@ -40,95 +39,114 @@ function fetchCartData() {
 }
 
 // Function to fetch dishes
-function fetchDishes(page) {
-  params.set("page", page);
-  let url = `https://food-delivery.int.kreosoft.space/api/dish?${params}`;
+async function fetchCartData() {
+  if (!isUserLoggedIn() || !getAuthToken()) {
+    console.log("User not logged in or token missing");
+    return [];
+  }
 
-  fetchCartData().then((cartData) => {
-    fetch(url)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (!data || !data.dishes || !Array.isArray(data.dishes)) {
-          throw new Error("Data format is incorrect");
-        }
-        const dishesContainer = document.getElementById("dishes-container");
-        dishesContainer.innerHTML = "";
-        data.dishes.forEach((dish) => {
-          const dishElement = document.createElement("div");
-          dishElement.classList.add("dishCard");
-
-          const vegetarianSymbol = dish.vegetarian ? "☘️" : "";
-
-          const cartItem = cartData.find((item) => item.id === dish.id);
-          const amount = cartItem ? cartItem.amount : 0;
-
-          let cartControlsHTML = "";
-          if (isLoggedIn) {
-            if (amount > 0) {
-              cartControlsHTML = `
-                <div class="add-to-cart-quantity">
-                  <button class="add-to-cart-more" onclick="updateQuantity('${dish.id}', -1)">-</button>
-                  <span class="quantity-number" id="count-${dish.id}">${amount}</span>
-                  <button class="sub-from-cart" onclick="updateQuantity('${dish.id}', 1)">+</button>
-                </div>
-              `;
-            } else {
-              cartControlsHTML = `
-                <button id="add-to-cart-${dish.id}" class="add-to-cart" onclick="addToCart('${dish.id}')">Add to Cart</button>
-              `;
-            }
-          }
-
-          dishElement.innerHTML = `
-            <div style="position: relative;">
-              <img src="${dish.image}" alt="${dish.name}" class="dish-image">
-              <span class="vegetarian-symbol">${vegetarianSymbol}</span>
-            </div>
-            <a href="../Menu-item/item.html?id=${
-              dish.id
-            }" class="dish-link"><h2 class="dish-name">${dish.name}</h2></a>
-            <p class="dish-category">Dish category - ${dish.category}</p>
-            <p class="dish-rating">Overall Rating: ${generateStarRating(
-              dish.rating
-            )}</p>
-            <p class="dish-description">${dish.description}</p>
-            <div class="price-container">
-                <p class="dish-price">Price - ${dish.price} ₽/dish</p>
-                ${cartControlsHTML}
-            </div>
-          `;
-
-          if (isLoggedIn) {
-            const ratingContainer = document.createElement("div");
-            ratingContainer.classList.add("star-rating");
-            ratingContainer.innerHTML = `
-              <p class="user-rating-label">Your Rating:
-              ${generateInteractiveStarRating(
-                cartItem ? cartItem.userRating : 0,
-                dish.id
-              )}
-            </p>`;
-            dishElement.appendChild(ratingContainer);
-          }
-
-          dishesContainer.appendChild(dishElement);
-        });
-
-        createPagination(data.pagination.current, data.pagination.count);
-        if (isLoggedIn) {
-          handleStarRating();
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching or processing data:", error);
-      });
-  });
+  try {
+    const response = await fetch("https://food-delivery.int.kreosoft.space/api/basket", {
+      headers: {
+        Authorization: `Bearer ${getAuthToken()}`,
+        Accept: "application/json",
+      },
+    });
+    return response.ok ? response.json() : [];
+  } catch (error) {
+    console.error("Error fetching cart:", error);
+    return [];
+  }
 }
+
+// Dish Rendering Components
+function createDishCard(dish, cartItem) {
+  const dishElement = document.createElement("div");
+  dishElement.classList.add("dishCard");
+  
+  dishElement.innerHTML = `
+    <div class="dish-image-container">
+      <img src="${dish.image}" alt="${dish.name}" class="dish-image">
+      ${dish.vegetarian ? '<span class="vegetarian-symbol">☘️</span>' : ''}
+    </div>
+    <a href="../Menu-item/item.html?id=${dish.id}" class="dish-link">
+      <h2>${dish.name}</h2>
+    </a>
+    <p>Category: ${dish.category}</p>
+    ${createRatingSection(dish, cartItem)}
+    <div class="price-container">
+      <p>${dish.price} ₽</p>
+      ${createCartControls(dish.id, cartItem?.amount || 0)}
+    </div>
+  `;
+
+  return dishElement;
+}
+
+function createCartControls(dishId, amount) {
+  if (!isUserLoggedIn()) return "";
+
+  return amount > 0
+    ? `
+      <div class="cart-controls">
+        <button onclick="updateQuantity('${dishId}', -1)">-</button>
+        <span id="count-${dishId}">${amount}</span>
+        <button onclick="updateQuantity('${dishId}', 1)">+</button>
+      </div>
+    `
+    : `<button onclick="addToCart('${dishId}')">Add to Cart</button>`;
+}
+
+function createRatingSection(dish, cartItem) {
+  return `
+    <div class="rating-section">
+      <p>Rating: ${generateStarRating(dish.rating)}</p>
+      ${isUserLoggedIn() ? `
+        <div class="user-rating">
+          <p>Your Rating:</p>
+          ${generateInteractiveStarRating(cartItem?.userRating || 0, dish.id)}
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+// Main Dish Fetching Logic
+async function fetchDishes(page) {
+  try {
+    const [cartData, dishesData] = await Promise.all([
+      fetchCartData(),
+      fetchDishesData(page)
+    ]);
+    
+    renderDishes(dishesData.dishes, cartData);
+    updatePagination(dishesData.pagination);
+    
+  } catch (error) {
+    console.error("Dish loading failed:", error);
+  }
+}
+
+async function fetchDishesData(page) {
+  const url = new URL("https://food-delivery.int.kreosoft.space/api/dish");
+  url.searchParams.set("page", page);
+  
+  const response = await fetch(url);
+  if (!response.ok) throw new Error("API request failed");
+  return response.json();
+}
+
+function renderDishes(dishes, cartData) {
+  const container = document.getElementById("dishes-container");
+  container.innerHTML = dishes.map(dish => 
+    createDishCard(dish, cartData.find(item => item.id === dish.id))
+  ).join("");
+}
+
+// Initialization
+document.addEventListener("DOMContentLoaded", () => {
+  fetchDishes(1);
+});
 
 // Function to add a dish to the cart
 function addToCart(dishID) {

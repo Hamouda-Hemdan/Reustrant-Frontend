@@ -1,4 +1,3 @@
-
 function getAuthToken() {
   return localStorage.getItem("token");
 }
@@ -17,7 +16,7 @@ function fetchCartData() {
 
   if (!isLoggedIn || !token) {
     console.log("User is not logged in or authorization token is missing.");
-    return Promise.resolve([]); // Return an empty array if not logged in
+    return Promise.resolve([]);
   }
 
   return fetch("https://food-delivery.int.kreosoft.space/api/basket", {
@@ -34,11 +33,10 @@ function fetchCartData() {
     })
     .catch((error) => {
       console.error("Error fetching cart data:", error);
-      return []; // Return an empty array if there's an error
+      return [];
     });
 }
 
-// Function to fetch dishes
 async function fetchCartData() {
   if (!isUserLoggedIn() || !getAuthToken()) {
     console.log("User not logged in or token missing");
@@ -46,12 +44,15 @@ async function fetchCartData() {
   }
 
   try {
-    const response = await fetch("https://food-delivery.int.kreosoft.space/api/basket", {
-      headers: {
-        Authorization: `Bearer ${getAuthToken()}`,
-        Accept: "application/json",
-      },
-    });
+    const response = await fetch(
+      "https://food-delivery.int.kreosoft.space/api/basket",
+      {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+          Accept: "application/json",
+        },
+      }
+    );
     return response.ok ? response.json() : [];
   } catch (error) {
     console.error("Error fetching cart:", error);
@@ -59,15 +60,14 @@ async function fetchCartData() {
   }
 }
 
-// Dish Rendering Components
 function createDishCard(dish, cartItem) {
   const dishElement = document.createElement("div");
   dishElement.classList.add("dishCard");
-  
+
   dishElement.innerHTML = `
     <div class="dish-image-container">
       <img src="${dish.image}" alt="${dish.name}" class="dish-image">
-      ${dish.vegetarian ? '<span class="vegetarian-symbol">☘️</span>' : ''}
+      ${dish.vegetarian ? '<span class="vegetarian-symbol">☘️</span>' : ""}
     </div>
     <a href="../Menu-item/item.html?id=${dish.id}" class="dish-link">
       <h2>${dish.name}</h2>
@@ -101,27 +101,29 @@ function createRatingSection(dish, cartItem) {
   return `
     <div class="rating-section">
       <p>Rating: ${generateStarRating(dish.rating)}</p>
-      ${isUserLoggedIn() ? `
+      ${
+        isUserLoggedIn()
+          ? `
         <div class="user-rating">
           <p>Your Rating:</p>
           ${generateInteractiveStarRating(cartItem?.userRating || 0, dish.id)}
         </div>
-      ` : ''}
+      `
+          : ""
+      }
     </div>
   `;
 }
 
-// Main Dish Fetching Logic
 async function fetchDishes(page) {
   try {
     const [cartData, dishesData] = await Promise.all([
       fetchCartData(),
-      fetchDishesData(page)
+      fetchDishesData(page),
     ]);
-    
+
     renderDishes(dishesData.dishes, cartData);
     updatePagination(dishesData.pagination);
-    
   } catch (error) {
     console.error("Dish loading failed:", error);
   }
@@ -130,7 +132,7 @@ async function fetchDishes(page) {
 async function fetchDishesData(page) {
   const url = new URL("https://food-delivery.int.kreosoft.space/api/dish");
   url.searchParams.set("page", page);
-  
+
   const response = await fetch(url);
   if (!response.ok) throw new Error("API request failed");
   return response.json();
@@ -138,17 +140,20 @@ async function fetchDishesData(page) {
 
 function renderDishes(dishes, cartData) {
   const container = document.getElementById("dishes-container");
-  container.innerHTML = dishes.map(dish => 
-    createDishCard(dish, cartData.find(item => item.id === dish.id))
-  ).join("");
+  container.innerHTML = dishes
+    .map((dish) =>
+      createDishCard(
+        dish,
+        cartData.find((item) => item.id === dish.id)
+      )
+    )
+    .join("");
 }
 
-// Initialization
 document.addEventListener("DOMContentLoaded", () => {
   fetchDishes(1);
 });
 
-// Function to add a dish to the cart
 function addToCart(dishID) {
   const token = getAuthToken();
   const isLoggedIn = isUserLoggedIn();
@@ -213,7 +218,6 @@ function addToCart(dishID) {
     });
 }
 
-// Function to update quantity of a dish in the cart
 function updateQuantity(dishID, change) {
   const token = getAuthToken();
 
@@ -230,7 +234,6 @@ function updateQuantity(dishID, change) {
       count = 1;
     }
 
-    // Determine endpoint and method based on change
     const endpoint =
       change > 0
         ? `https://food-delivery.int.kreosoft.space/api/basket/dish/${dishID}`
@@ -258,7 +261,6 @@ function updateQuantity(dishID, change) {
   }
 }
 
-// Function to generate star rating HTML with empty stars
 function generateStarRating(rating) {
   const fullStars = Math.floor(rating);
   const halfStar = rating % 1 >= 0.5;
@@ -281,7 +283,6 @@ function generateStarRating(rating) {
   return starHTML;
 }
 
-// Function to generate interactive star rating HTML
 function generateInteractiveStarRating(rating, dishId) {
   let starHTML = "";
   for (let i = 1; i <= 10; i++) {
@@ -292,11 +293,11 @@ function generateInteractiveStarRating(rating, dishId) {
   }
   return starHTML;
 }
-// Unnecessary wrapper for fetchCartData()
+
 function getCart() {
-  return fetchCartData(); // Just returns the result of another function
+  return fetchCartData();
 }
-// Function to handle star rating events
+
 function handleStarRating() {
   const starIcons = document.querySelectorAll(".star-rating .fas.fa-star");
   starIcons.forEach((starIcon) => {
@@ -325,7 +326,6 @@ function handleStarRating() {
   });
 }
 
-// Function to highlight stars up to a given rating
 function highlightStars(rating, dishId) {
   const starIcons = document.querySelectorAll(
     `.star-rating .fas.fa-star[data-dish-id="${dishId}"]`
@@ -337,7 +337,6 @@ function highlightStars(rating, dishId) {
   });
 }
 
-// Function to submit a rating for a dish
 function submitRating(dishId, rating) {
   console.log("Rating:", rating);
 
@@ -385,14 +384,12 @@ function submitRating(dishId, rating) {
     });
 }
 
-// Function to handle pagination
 function handlePagination(newPage) {
   currentPage = newPage;
   sessionStorage.setItem("currentPage", currentPage);
   fetchDishes(currentPage);
 }
 
-// Function to apply filters
 document.getElementById("filter").addEventListener("click", applyFilters);
 
 function applyFilters() {
@@ -426,7 +423,6 @@ function applyFilters() {
   fetchDishes(currentPage);
 }
 
-// Initialize functions on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", function () {
   const selectBox = document.querySelector(".select-box");
 
@@ -438,7 +434,6 @@ document.addEventListener("DOMContentLoaded", function () {
   fetchCartData();
 });
 
-// Function to fetch and update total amount of dishes in the cart
 async function fetchAndUpdateTotalAmount() {
   try {
     const apiUrl = "https://food-delivery.int.kreosoft.space/api/basket";
@@ -464,47 +459,39 @@ async function fetchAndUpdateTotalAmount() {
   }
 }
 
-// Function to check token expiration and logout if expired
 function checkTokenExpiration() {
   const token = getAuthToken();
   if (!token) {
-    // Token not found, user is already logged out
     return;
   }
 
   try {
     const tokenPayload = JSON.parse(atob(token.split(".")[1]));
-    const tokenExp = tokenPayload.exp * 1000; // Convert to milliseconds
+    const tokenExp = tokenPayload.exp * 1000;
     const currentTime = new Date().getTime();
 
     if (currentTime >= tokenExp) {
-      // Token has expired, perform logout
       console.log("Token expired. Logging out...");
       logoutUser();
     } else {
-      // Token still valid, continue checking
       const timeToExpire = tokenExp - currentTime;
       setTimeout(checkTokenExpiration, timeToExpire);
     }
   } catch (error) {
     console.error("Error parsing token:", error);
-    logoutUser(); // Force logout on token parse error
+    logoutUser();
   }
 }
 
-// Function to logout user and clear token
 function logoutUser() {
-  // Clear token and update UI
   localStorage.removeItem("token");
-  localStorage.setItem("isLoggedIn", "false"); // Update login status if needed
-  // Redirect to login page or show appropriate message
+  localStorage.setItem("isLoggedIn", "false");
   window.location.href = "Authorization/login.html";
 }
 
 checkTokenExpiration();
 
 if (token) {
-  // Start polling to update total amount every 1 second
   function startPolling(interval = 1000) {
     fetchAndUpdateTotalAmount();
 

@@ -66,6 +66,7 @@ async function fetchDataAndPopulate() {
 }
 
 // Quantity management functions
+
 async function increaseQuantity(itemId) {
   try {
     const token = localStorage.getItem("token");
@@ -85,6 +86,7 @@ async function increaseQuantity(itemId) {
     if (!response.ok) {
       throw new Error("Failed to increase item quantity");
     }
+
     fetchDataAndPopulate();
   } catch (error) {
     console.error("Error increasing quantity:", error.message);
@@ -108,6 +110,7 @@ async function decreaseQuantity(itemId) {
     if (!response.ok) {
       throw new Error("Failed to decrease item quantity");
     }
+
     fetchDataAndPopulate();
   } catch (error) {
     console.error("Error decreasing quantity:", error.message);

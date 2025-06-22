@@ -1,8 +1,18 @@
-// login.js
-
 document.getElementById("loginBtn").addEventListener("click", function () {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  // Input validation
+  if (!email || !password) {
+    alert("Email and password must not be empty.");
+    return;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    alert("Please enter a valid email address.");
+    return;
+  }
 
   const data = {
     email: email,
@@ -14,7 +24,7 @@ document.getElementById("loginBtn").addEventListener("click", function () {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "include", // Important! Send cookies (for HttpOnly token)
+    credentials: "include", // Important for HttpOnly cookie
     body: JSON.stringify(data),
   })
     .then((response) => {
@@ -25,13 +35,7 @@ document.getElementById("loginBtn").addEventListener("click", function () {
       }
     })
     .then((data) => {
-      // Token is now stored as HttpOnly cookie by the server.
-      // Frontend does NOT store token in localStorage.
-
-      // Optionally, you can store a simple flag in sessionStorage/localStorage if needed:
       sessionStorage.setItem("isLoggedIn", "true");
-
-      // Redirect to home page after successful login
       window.location.href = "../index.html";
     })
     .catch((error) => {

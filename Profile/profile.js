@@ -1,4 +1,4 @@
-// --- Utility Functions ---
+
 function getToken() {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -14,7 +14,7 @@ function handleFetchErrors(response) {
   return response.json();
 }
 
-// --- Fetch & Populate Profile ---
+
 function getProfile() {
   const token = getToken();
   if (!token) return;
@@ -52,7 +52,7 @@ function setText(id, text) {
   if (el) el.textContent = text;
 }
 
-// --- Handle Form Submit (Update Profile) ---
+
 function handleProfileFormSubmit(event) {
   event.preventDefault();
 
@@ -81,10 +81,10 @@ function handleProfileFormSubmit(event) {
     });
 }
 
-// --- Attach Submit Handler ---
+
 document
   .getElementById("profileForm")
   .addEventListener("submit", handleProfileFormSubmit);
 
-// --- Initial Load ---
+
 getProfile();

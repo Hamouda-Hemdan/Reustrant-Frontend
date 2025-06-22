@@ -1,4 +1,4 @@
-// Main basket display function
+
 async function fetchDataAndPopulate() {
   try {
     const token = localStorage.getItem("token");
@@ -65,7 +65,7 @@ async function fetchDataAndPopulate() {
   }
 }
 
-// Quantity management functions
+
 
 async function increaseQuantity(itemId) {
   try {
@@ -140,5 +140,5 @@ async function removeItem(itemId) {
   }
 }
 
-// Initialize on page load
+
 fetchDataAndPopulate();

@@ -167,7 +167,6 @@ function addToCart(dishID) {
     .catch((error) => handleAddToCartError(error, addToCartButton));
 }
 
-// --- Extracted helper functions ---
 
 function validateUserSession() {
   const token = getAuthToken();

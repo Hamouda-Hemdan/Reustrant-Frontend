@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const orderId = getOrderIdFromURL(); // Extract order ID from URL
-
+  const orderId = getOrderIdFromURL(); 
   if (orderId) {
     fetchOrderDetails(orderId);
   } else {

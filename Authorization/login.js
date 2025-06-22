@@ -2,7 +2,6 @@ document.getElementById("loginBtn").addEventListener("click", function () {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
-  // Input validation
   if (!email || !password) {
     alert("Email and password must not be empty.");
     return;
@@ -24,7 +23,7 @@ document.getElementById("loginBtn").addEventListener("click", function () {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "include", // Important for HttpOnly cookie
+    credentials: "include", 
     body: JSON.stringify(data),
   })
     .then((response) => {

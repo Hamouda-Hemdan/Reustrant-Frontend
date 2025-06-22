@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelector("form").addEventListener("submit", function (event) {
     event.preventDefault(); // Prevent default form submission
 
-    // Collect form data
     const formData = {
       fullName: document.getElementById("username").value,
       email: document.getElementById("email").value,
@@ -32,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
       address: document.getElementById("address").value,
     };
 
-    // Send POST request to the API endpoint
+    
     fetch("https://food-delivery.int.kreosoft.space/api/account/register", {
       method: "POST",
       headers: {
@@ -42,19 +41,19 @@ document.addEventListener("DOMContentLoaded", function () {
       body: JSON.stringify(formData),
     })
       .then((response) => {
-        // Log the response status
+        
         console.log("Response status:", response.status);
         return response.json();
       })
       .then((data) => {
-        // Log the response data
+        
         console.log("Response data:", data);
-        // Handle success response here, e.g., show a success message to the user
+        
         window.location.href = "../Authorization/login.html";
       })
       .catch((error) => {
         console.error("Error:", error);
-        // Handle error here, e.g., show an error message to the user
+        
       });
   });
 });

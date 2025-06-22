@@ -294,9 +294,7 @@ function generateInteractiveStarRating(rating, dishId) {
   return starHTML;
 }
 
-function getCart() {
-  return fetchCartData();
-}
+
 
 function handleStarRating() {
   const starIcons = document.querySelectorAll(".star-rating .fas.fa-star");

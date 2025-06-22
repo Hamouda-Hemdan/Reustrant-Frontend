@@ -1,76 +1,90 @@
-// Fetch profile information
-function getProfile() {
-  const token = localStorage.getItem('token');
+// --- Utility Functions ---
+function getToken() {
+  const token = localStorage.getItem("token");
   if (!token) {
-    console.error('Token not found');
-    return;
+    console.error("Token not found");
   }
-
-  fetch('https://food-delivery.int.kreosoft.space/api/account/profile', {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/json'
-    }
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => {
-    // Update form fields with fetched profile data
-    document.getElementById('username').value = data.fullName;
-    document.getElementById('birthdate').value = data.birthDate.split('T')[0];
-    document.getElementById('gender').value = data.gender;
-    document.getElementById('address').value = data.address;
-    document.getElementById('email').textContent = data.email;
-    document.getElementById('phone').value = data.phoneNumber;
-  })
-  .catch(error => {
-    console.error('There was a problem with the fetch operation:', error);
-  });
+  return token;
 }
 
+function handleFetchErrors(response) {
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+  return response.json();
+}
 
+// --- Fetch & Populate Profile ---
+function getProfile() {
+  const token = getToken();
+  if (!token) return;
 
-// Update profile
-document.getElementById('profileForm').addEventListener('submit', function(event) {
+  fetch("https://food-delivery.int.kreosoft.space/api/account/profile", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  })
+    .then(handleFetchErrors)
+    .then(populateProfileForm)
+    .catch((error) =>
+      console.error("Failed to fetch profile information:", error)
+    );
+}
+
+function populateProfileForm(data) {
+  setValue("username", data.fullName);
+  setValue("birthdate", data.birthDate.split("T")[0]);
+  setValue("gender", data.gender);
+  setValue("address", data.address);
+  setValue("phone", data.phoneNumber);
+  setText("email", data.email);
+}
+
+function setValue(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.value = value;
+}
+
+function setText(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+
+// --- Handle Form Submit (Update Profile) ---
+function handleProfileFormSubmit(event) {
   event.preventDefault();
 
-  const token = localStorage.getItem('token'); 
-  if (!token) {
-    console.error('Token not found');
-    return;
-  }
+  const token = getToken();
+  if (!token) return;
 
-  const formData = new FormData(this);
-  const profileData = {};
-  formData.forEach((value, key) => {
-    profileData[key] = value;
-  });
+  const formData = new FormData(event.target);
+  const profileData = Object.fromEntries(formData.entries());
 
-
-  fetch('https://food-delivery.int.kreosoft.space/api/account/profile', {
-    method: 'PUT',
+  fetch("https://food-delivery.int.kreosoft.space/api/account/profile", {
+    method: "PUT",
     headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(profileData)
+    body: JSON.stringify(profileData),
   })
-  .then(response => {
-    console.log(response)
-    return response.json();
-  })
-  .then(data => {
-    console.log('Profile updated successfully:', data);
-  
-  })
-  .catch(error => {
-    console.error(error);
-  });
-});
+    .then(handleFetchErrors)
+    .then((data) => {
+      console.log("Profile updated successfully:", data);
+      alert("Profile updated successfully.");
+    })
+    .catch((error) => {
+      console.error("Error updating profile:", error);
+      alert("Failed to update profile.");
+    });
+}
 
+// --- Attach Submit Handler ---
+document
+  .getElementById("profileForm")
+  .addEventListener("submit", handleProfileFormSubmit);
+
+// --- Initial Load ---
 getProfile();

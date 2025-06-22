@@ -155,67 +155,92 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function addToCart(dishID) {
+  if (!validateUserSession()) return;
+
+  const addToCartButton = getAddToCartButton(dishID);
+  if (!addToCartButton) return;
+
+  disableButton(addToCartButton);
+
+  sendAddToCartRequest(dishID)
+    .then(() => updateCartUI(dishID, addToCartButton))
+    .catch((error) => handleAddToCartError(error, addToCartButton));
+}
+
+// --- Extracted helper functions ---
+
+function validateUserSession() {
   const token = getAuthToken();
-  const isLoggedIn = isUserLoggedIn();
-  if (!isLoggedIn) {
+  if (!isUserLoggedIn()) {
     console.error("User is not signed in.");
     alert("You need to sign in to add items to your cart.");
-    return;
+    return false;
   }
-
   if (!token) {
     console.error("Authorization token is missing.");
-    return;
+    return false;
   }
+  return true;
+}
 
-  const addToCartButton = document.getElementById(`add-to-cart-${dishID}`);
-  if (!addToCartButton) {
+function getAddToCartButton(dishID) {
+  const button = document.getElementById(`add-to-cart-${dishID}`);
+  if (!button) {
     console.error(`Button with ID 'add-to-cart-${dishID}' not found.`);
-    return;
+  }
+  return button;
+}
+
+function disableButton(button) {
+  button.disabled = true;
+}
+
+function sendAddToCartRequest(dishID) {
+  const token = getAuthToken();
+  return fetch(
+    `https://food-delivery.int.kreosoft.space/api/basket/dish/${dishID}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ quantity: 1 }),
+    }
+  ).then((response) => {
+    if (!response.ok) {
+      throw new Error("Failed to add item to cart");
+    }
+    return fetchCartData();
+  });
+}
+
+function updateCartUI(dishID, oldButton) {
+  const cartItem = cartData.find((item) => item.id === dishID);
+  const amount = cartItem ? cartItem.amount : 1;
+
+  const cartCountElement = document.getElementById("cart-count");
+  if (cartCountElement) {
+    const currentCount = parseInt(cartCountElement.textContent) || 0;
+    cartCountElement.textContent = currentCount + 1;
   }
 
-  addToCartButton.disabled = true;
-  fetch(`https://food-delivery.int.kreosoft.space/api/basket/dish/${dishID}`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-    },
-    body: JSON.stringify({
-      quantity: 1,
-    }),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Failed to add item to cart");
-      }
-      return fetchCartData();
-    })
-    .then(() => {
-      const cartItem = cartData.find((item) => item.id === dishID);
-      const amount = cartItem ? cartItem.amount : 1;
-
-      const cartCountElement = document.getElementById("cart-count");
-      if (cartCountElement) {
-        const currentCount = parseInt(cartCountElement.textContent);
-        cartCountElement.textContent = currentCount + 1;
-      }
-      const countDisplay = document.createElement("div");
-      countDisplay.classList.add("add-to-cart-quantity");
-      const dishCountID = `count-${dishID}`;
-      countDisplay.innerHTML = `
+  const dishCountID = `count-${dishID}`;
+  const countDisplay = document.createElement("div");
+  countDisplay.classList.add("add-to-cart-quantity");
+  countDisplay.innerHTML = `
     <button class="add-to-cart-more" onclick="updateQuantity('${dishID}', -1)">-</button>
     <span class="quantity-number" id="${dishCountID}">${amount}</span>
-    <button class="sub-from-cart" onclick="updateQuantity('${dishID}', 1)">+</button
+    <button class="sub-from-cart" onclick="updateQuantity('${dishID}', 1)">+</button>
   `;
 
-      addToCartButton.parentNode.replaceChild(countDisplay, addToCartButton);
-    })
-    .catch((error) => {
-      console.error("Error adding item to cart:", error);
-      alert("Failed to add item to cart. Please try again later.");
-      addToCartButton.disabled = false;
-    });
+  oldButton.parentNode.replaceChild(countDisplay, oldButton);
+}
+
+function handleAddToCartError(error, button) {
+  console.error("Error adding item to cart:", error);
+  alert("Failed to add item to cart. Please try again later.");
+  button.disabled = false;
 }
 
 function updateQuantity(dishID, change) {
@@ -293,8 +318,6 @@ function generateInteractiveStarRating(rating, dishId) {
   }
   return starHTML;
 }
-
-
 
 function handleStarRating() {
   const starIcons = document.querySelectorAll(".star-rating .fas.fa-star");
